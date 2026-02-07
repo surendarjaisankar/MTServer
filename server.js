@@ -41,8 +41,8 @@ app.use(
 // ----------------------
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigin,
-    methods: ['GET', 'POST'],
+    origin: allowedOrigins,
+    methods: ['GET', 'POST']
   },
 })
 
