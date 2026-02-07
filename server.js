@@ -13,15 +13,28 @@ const server = http.createServer(app)
 // ----------------------
 // CORS CONFIG
 // ----------------------
-const allowedOrigin =
-  process.env.FRONTEND_URL;
+// ----------------------
+// CORS CONFIG
+// ----------------------
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+  "https://mt-client-omega.vercel.app"
+].filter(Boolean); // removes undefined
 
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
-)
+);
 
 // ----------------------
 // SOCKET.IO CONFIG
