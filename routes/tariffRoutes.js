@@ -82,21 +82,19 @@ router.post('/', async (req, res) => {
 });
 
 // Update tariff
-// Update tariff
 router.put('/:vehicleType', async (req, res) => {
   try {
 
     const { baseFare, perKmRate, minKm } = req.body;
 
-    const updates = {};
-
-    if (baseFare !== undefined) updates.baseFare = baseFare;
-    if (perKmRate !== undefined) updates.perKmRate = perKmRate;
-    if (minKm !== undefined) updates.minKm = minKm;
-
     const tariff = await Tariff.findOneAndUpdate(
       { vehicleType: req.params.vehicleType },
-      updates,
+      {
+        vehicleType: req.params.vehicleType,
+        baseFare,
+        perKmRate,
+        minKm
+      },
       {
         new: true,
         runValidators: true,
@@ -106,17 +104,20 @@ router.put('/:vehicleType', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Tariff updated successfully',
+      message: 'Tariff saved successfully',
       tariff
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message
     });
+
   }
 });
+
 
 // Delete tariff
 router.delete('/:vehicleType', async (req, res) => {
