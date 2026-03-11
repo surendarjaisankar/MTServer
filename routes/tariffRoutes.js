@@ -3,6 +3,14 @@ const Tariff = require('../models/Tariff');
 
 const router = express.Router();
 
+const {
+  saveTariff,
+  getTariffs
+} = require("../controllers/tariffController");
+
+
+router.post("/save", saveTariff);
+router.get("/", getTariffs);
 // Get all tariffs
 router.get('/', async (req, res) => {
   try {
