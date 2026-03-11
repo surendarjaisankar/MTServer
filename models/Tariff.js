@@ -1,25 +1,29 @@
-// models/Tariff.js
-
 const mongoose = require("mongoose");
 
-const tariffSchema = new mongoose.Schema({
-  vehicleType: { 
-    type: String, 
+const TariffSchema = new mongoose.Schema(
+{
+  vehicleType: {
+    type: String,
     required: true,
-    unique: true
   },
-  baseFare: { 
-    type: Number, 
-    required: true 
+  baseFare: {
+    type: Number,
+    required: true,
   },
-  perKmRate: { 
-    type: Number, 
-    required: true 
+  perKmRate: {
+    type: Number,
+    required: true,
   },
-  minKm: { 
-    type: Number, 
-    default: 3 
-  }
-});
+  perMinuteRate: {
+    type: Number,
+    required: true,
+  },
+  minimumFare: {
+    type: Number,
+    required: true,
+  },
+},
+{ timestamps: true }
+);
 
-module.exports = mongoose.model("Tariff", tariffSchema);
+module.exports = mongoose.model("Tariff", TariffSchema);
