@@ -99,16 +99,10 @@ router.put('/:vehicleType', async (req, res) => {
       updates,
       {
         new: true,
-        runValidators: true
+        runValidators: true,
+        upsert: true
       }
     );
-
-    if (!tariff) {
-      return res.status(404).json({
-        success: false,
-        message: 'Tariff not found'
-      });
-    }
 
     res.json({
       success: true,
