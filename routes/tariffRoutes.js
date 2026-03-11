@@ -1,118 +1,169 @@
-const express = require('express');
-const Tariff = require('../models/Tariff');
+const express = require("express");
+const Tariff = require("../models/Tariff");
 
 const router = express.Router();
 
-const {
-  saveTariff,
-  getTariffs
-} = require("../controllers/tariffController");
 
+// ----------------------
+// GET ALL TARIFFS
+// ----------------------
+router.get("/", async (req, res) => {
 
-router.post("/save", saveTariff);
-router.get("/", getTariffs);
-// Get all tariffs
-router.get('/', async (req, res) => {
   try {
+
     const tariffs = await Tariff.find().sort({ vehicleType: 1 });
 
     res.json({
       success: true,
-      tariffs,
+      tariffs
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
   }
+
 });
 
-// Get tariff by vehicle type
-router.get('/:vehicleType', async (req, res) => {
+
+// ----------------------
+// GET TARIFF BY VEHICLE
+// ----------------------
+router.get("/:vehicleType", async (req, res) => {
+
   try {
-    const tariff = await Tariff.findOne({ vehicleType: req.params.vehicleType });
+
+    const tariff = await Tariff.findOne({
+      vehicleType: req.params.vehicleType
+    });
 
     if (!tariff) {
-      return res.status(404).json({ success: false, message: 'Tariff not found' });
+
+      return res.status(404).json({
+        success: false,
+        message: "Tariff not found"
+      });
+
     }
 
     res.json({
       success: true,
-      tariff,
+      tariff
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
   }
+
 });
 
-// Create tariff
-// Create tariff
-router.post('/', async (req, res) => {
+
+// ----------------------
+// CREATE TARIFF
+// ----------------------
+router.post("/", async (req, res) => {
+
   try {
 
-    const { vehicleType, baseFare, perKmRate, minKm } = req.body;
+    const {
+      vehicleType,
+      baseFare,
+      perKmRate,
+      perMinuteRate,
+      minimumFare
+    } = req.body;
 
-    if (!vehicleType || baseFare === undefined || perKmRate === undefined) {
+
+    if (!vehicleType || baseFare == null || perKmRate == null) {
+
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required tariff details'
+        message: "vehicleType, baseFare, perKmRate required"
       });
+
     }
 
-    const existingTariff = await Tariff.findOne({ vehicleType });
+    const existing = await Tariff.findOne({ vehicleType });
 
-    if (existingTariff) {
+    if (existing) {
+
       return res.status(400).json({
         success: false,
-        message: 'Tariff already exists for this vehicle type'
+        message: "Tariff already exists"
       });
+
     }
 
     const tariff = new Tariff({
       vehicleType,
       baseFare,
       perKmRate,
-      minKm
+      perMinuteRate,
+      minimumFare
     });
 
     await tariff.save();
 
     res.status(201).json({
       success: true,
-      message: 'Tariff created successfully',
       tariff
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message
     });
+
   }
+
 });
 
-// Update tariff
-router.put('/:vehicleType', async (req, res) => {
+
+// ----------------------
+// UPDATE TARIFF
+// ----------------------
+router.put("/:vehicleType", async (req, res) => {
+
   try {
 
-    const { baseFare, perKmRate, minKm } = req.body;
+    const {
+      baseFare,
+      perKmRate,
+      perMinuteRate,
+      minimumFare
+    } = req.body;
 
     const tariff = await Tariff.findOneAndUpdate(
+
       { vehicleType: req.params.vehicleType },
+
       {
-        vehicleType: req.params.vehicleType,
         baseFare,
         perKmRate,
-        minKm
+        perMinuteRate,
+        minimumFare
       },
+
       {
         new: true,
-        runValidators: true,
         upsert: true
       }
+
     );
 
     res.json({
       success: true,
-      message: 'Tariff saved successfully',
       tariff
     });
 
@@ -124,25 +175,35 @@ router.put('/:vehicleType', async (req, res) => {
     });
 
   }
+
 });
 
 
-// Delete tariff
-router.delete('/:vehicleType', async (req, res) => {
-  try {
-    const tariff = await Tariff.findOneAndDelete({ vehicleType: req.params.vehicleType });
+// ----------------------
+// DELETE TARIFF
+// ----------------------
+router.delete("/:vehicleType", async (req, res) => {
 
-    if (!tariff) {
-      return res.status(404).json({ success: false, message: 'Tariff not found' });
-    }
+  try {
+
+    await Tariff.findOneAndDelete({
+      vehicleType: req.params.vehicleType
+    });
 
     res.json({
       success: true,
-      message: 'Tariff deleted successfully',
+      message: "Tariff deleted"
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
   }
+
 });
 
 module.exports = router;
