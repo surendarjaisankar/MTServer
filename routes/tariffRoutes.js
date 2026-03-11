@@ -79,31 +79,42 @@ router.post('/', async (req, res) => {
 // Update tariff
 router.put('/:vehicleType', async (req, res) => {
   try {
-    const { localTariff, dayRent, outstationTariff, packageTariff, isActive } = req.body;
+
+    const { baseFare, perKmRate, minKm } = req.body;
 
     const updates = {};
-    if (localTariff) updates.localTariff = localTariff;
-    if (dayRent) updates.dayRent = dayRent;
-    if (outstationTariff) updates.outstationTariff = outstationTariff;
-    if (packageTariff) updates.packageTariff = packageTariff;
-    if (isActive !== undefined) updates.isActive = isActive;
 
-    const tariff = await Tariff.findOneAndUpdate({ vehicleType: req.params.vehicleType }, updates, {
-      new: true,
-      runValidators: true,
-    });
+    if (baseFare !== undefined) updates.baseFare = baseFare;
+    if (perKmRate !== undefined) updates.perKmRate = perKmRate;
+    if (minKm !== undefined) updates.minKm = minKm;
+
+    const tariff = await Tariff.findOneAndUpdate(
+      { vehicleType: req.params.vehicleType },
+      updates,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
     if (!tariff) {
-      return res.status(404).json({ success: false, message: 'Tariff not found' });
+      return res.status(404).json({
+        success: false,
+        message: "Tariff not found"
+      });
     }
 
     res.json({
       success: true,
-      message: 'Tariff updated successfully',
-      tariff,
+      message: "Tariff updated successfully",
+      tariff
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 });
 
