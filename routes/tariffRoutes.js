@@ -36,32 +36,33 @@ router.get('/:vehicleType', async (req, res) => {
 });
 
 // Create tariff
+// Create tariff
 router.post('/', async (req, res) => {
   try {
-    const { vehicleType, localTariff, dayRent, outstationTariff, packageTariff } = req.body;
 
-    if (!vehicleType || !localTariff || !dayRent || !outstationTariff) {
+    const { vehicleType, baseFare, perKmRate, minKm } = req.body;
+
+    if (!vehicleType || baseFare === undefined || perKmRate === undefined) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required tariff details',
+        message: 'Please provide all required tariff details'
       });
     }
 
-    // Check if tariff already exists
     const existingTariff = await Tariff.findOne({ vehicleType });
+
     if (existingTariff) {
       return res.status(400).json({
         success: false,
-        message: 'Tariff already exists for this vehicle type',
+        message: 'Tariff already exists for this vehicle type'
       });
     }
 
     const tariff = new Tariff({
       vehicleType,
-      localTariff,
-      dayRent,
-      outstationTariff,
-      packageTariff,
+      baseFare,
+      perKmRate,
+      minKm
     });
 
     await tariff.save();
@@ -69,13 +70,18 @@ router.post('/', async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Tariff created successfully',
-      tariff,
+      tariff
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 });
 
+// Update tariff
 // Update tariff
 router.put('/:vehicleType', async (req, res) => {
   try {
@@ -100,13 +106,13 @@ router.put('/:vehicleType', async (req, res) => {
     if (!tariff) {
       return res.status(404).json({
         success: false,
-        message: "Tariff not found"
+        message: 'Tariff not found'
       });
     }
 
     res.json({
       success: true,
-      message: "Tariff updated successfully",
+      message: 'Tariff updated successfully',
       tariff
     });
 
