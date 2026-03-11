@@ -4,6 +4,7 @@ const cors = require('cors')
 const dotenv = require('dotenv')
 const http = require('http')
 const { Server } = require('socket.io')
+const tariffRoutes = require("./routes/tariffRoutes");
 
 dotenv.config()
 
@@ -74,6 +75,7 @@ app.use('/api/trips', require('./routes/tripRoutes'))
 app.use('/api/tariffs', require('./routes/tariffRoutes'))
 app.use('/api/notifications', require('./routes/notificationRoutes'))
 app.use('/api/dashboard', require('./routes/dashboardRoutes'))
+app.use("/api/tariffs", require('./routes/tariffRoutes'))
 
 // ----------------------
 // HEALTH CHECK
