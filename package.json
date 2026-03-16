@@ -1,0 +1,20 @@
+{
+  "name": "mobile-track-backend",
+  "version": "1.0.0",
+  "description": "Taxi Management Backend",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.3.0",
+    "socket.io": "^4.8.3"
+  }
+}
